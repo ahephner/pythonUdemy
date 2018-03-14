@@ -43,9 +43,9 @@ else:
 #65 + 5 dollar ticket
 #everyone else 10 dollar
 #gives you the opposite
-agea = 21
+age = 21
 
-if (agea>= 2 and agea<= 8) or agea>=65):
+if (age>= 2 and age<= 8 or age>=65):
     print("10 dollars")
 else: 
     print('discount')
