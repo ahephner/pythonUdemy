@@ -1,6 +1,6 @@
 #== equal too
 1 == 1 #true
-a == A #false capitilize
+x == X #false capitilize
 
 # != not equal too
 

@@ -22,3 +22,10 @@ num = 0
 while num<10:
     print(num)
     num += 1
+
+
+i = 0
+
+while i < 11:
+    i+=1
+    print("*" * i)
