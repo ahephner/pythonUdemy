@@ -1,3 +1,5 @@
+#error on copy- future FYI I brought in from CSV file and had calcs covered. This threw an error as the calc was a string under number
+#redid the list by totally scrubbing the file to just numbers and strings then converted to csv utf-8
 import matplotlib.pyplot as py
 import numpy as ny 
 
@@ -22,17 +24,16 @@ full_labor = [sum(x) for x in zip(*clabor)]
 #double check to make sure I still have same num of items after adding two together
 #print(len(full_labor))
 
+#plots below first is efficency of WO per park 
+fig = py.figure()
+fig.suptitle('WO Completed', fontsize = 14, fontweight = 'bold')
+#adding subheader 
+#subplot(nrows, ncolumns, plot_number)
+ax = fig.add_subplot(111)
+fig.subplots_adjust(top = 0.85)
 
+py.scatter(ft_labor, hours, s=wo)
 
+py.show()
+py.clf()
 
-
-#error on copy- future FYI I brought in from CSV file and had calcs covered. This threw an error as the calc was a string under number
-#redid the list by totally scrubbing the file to just numbers and strings then converted to csv utf-8
-
-#double checking my list are all the same lenght len(takes one arg so I had 8 checks )
-# print(len(park))
-
-
-#py.scatter(ft_labor, hours, s=wo)
-
-#py.show()
