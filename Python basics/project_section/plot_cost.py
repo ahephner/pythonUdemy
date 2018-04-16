@@ -32,8 +32,20 @@ fig.suptitle('WO Completed', fontsize = 14, fontweight = 'bold')
 ax = fig.add_subplot(111)
 fig.subplots_adjust(top = 0.85)
 
+#y axis
+py.ylabel('Booked Hours')
+
+#x axis
+py.xlabel('Cost')
+
+#graph body 
 py.scatter(ft_labor, hours, s=wo)
 
 py.show()
 py.clf()
+
+#pie chart pt v. ft labor 
+
+
+#histogram 
 
