@@ -1,7 +1,8 @@
 #error on copy- future FYI I brought in from CSV file and had calcs covered. This threw an error as the calc was a string under number
 #redid the list by totally scrubbing the file to just numbers and strings then converted to csv utf-8
 import matplotlib.pyplot as py
-import numpy as ny 
+import numpy as np 
+
 
 
 #COPIED LISTS
@@ -21,8 +22,12 @@ clabor.append(pt_labor)
 #use the zip(*) to get the two arrays to add together to get labor cost
 full_labor = [sum(x) for x in zip(*clabor)]
 
-#double check to make sure I still have same num of items after adding two together
-#print(len(full_labor))
+#convert wo to numpy
+npwo = np.array(wo)
+
+np_wo= npwo * 2 
+
+ind = np.arange(len(park))
 
 #plots below first is efficency of WO per park 
 fig = py.figure()
@@ -32,20 +37,33 @@ fig.suptitle('WO Completed', fontsize = 14, fontweight = 'bold')
 ax = fig.add_subplot(111)
 fig.subplots_adjust(top = 0.85)
 
+
 #y axis
-py.ylabel('Booked Hours')
+py.ylabel('Booked Hours', fontsize=22, fontweight = 'bold')
+
 
 #x axis
-py.xlabel('Cost')
+py.xlabel('Cost', fontsize = 22, fontweight = 'bold')
 
-#graph body 
-py.scatter(ft_labor, hours, s=wo)
+#graph body
+ 
+py.scatter(ft_labor, hours, s=np_wo, label=park)
 
+
+
+
+
+py.grid(True)
 py.show()
 py.clf()
 
-#pie chart pt v. ft labor 
+#bar Chart
+py.xlabel('Part-Time Labor Hours', fontsize = 20, fontweight = 'bold')
+py.ylabel('Cost', fontsize=20, fontweight = 'bold')
+py.xticks(ind, park, fontsize = 15)
+py.yticks(fontsize = 15)
+py.bar(ind, pt_labor)
 
 
-#histogram 
-
+py.show()
+py.clf()
