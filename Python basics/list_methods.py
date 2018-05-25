@@ -1,7 +1,7 @@
 #list methods add
 
 #append
-#cant add more than item
+#cant add more than 1 item
 scores = [3,4,12,4]
 
 scores.append(3)
