@@ -51,8 +51,6 @@ py.scatter(ft_labor, hours, s=np_wo, label=park)
 
 
 
-
-
 py.grid(True)
 py.show()
 py.clf()
