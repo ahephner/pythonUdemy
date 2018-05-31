@@ -13,7 +13,7 @@ def ecdf(data):
     x = np.sort(data)
 
     # y-data for the ECDF: y
-    # 
+    #np.arange(start, stop)/step  
     y = np.arange(1, n+1) / n
 
     return x, y
@@ -45,3 +45,5 @@ plt.xlabel('something')
 plt.ylabel('hey')
 
 plt.show()
+
+
