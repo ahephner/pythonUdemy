@@ -9,6 +9,11 @@
 # Create bee swarm plot with Seaborn's default settings
 import matplotlib.pyplot as plt
 import seaborn as sns 
+import pandas as pd 
+
+df = pd.read_excel(r"C:\Users\ajhep\Desktop\dataexamples.xlsx", sheet_name= 'box_whisker' )
+
+
 _ = sns.swarmplot(x='species', y = 'petal length (cm)', data = df)
 
 # Label the axes

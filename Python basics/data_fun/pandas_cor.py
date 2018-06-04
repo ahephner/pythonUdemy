@@ -18,7 +18,7 @@ read = pd.read_excel(file, sheet_name = 'correlation')
 
 
 #straight panda compairs all down the columns on the sheet
-r = read.corr()
+r = read.corr('pearson')
 
 print(r)
 
