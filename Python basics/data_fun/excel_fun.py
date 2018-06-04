@@ -20,6 +20,7 @@ load = pd.read_excel(file)
 df = [col for col in load if col.startswith('Period')]
 
 #Transpose a sheet 
+#cand do load.transpose(args, kwgs)
 turn = load.T 
 print(turn.head)
 
