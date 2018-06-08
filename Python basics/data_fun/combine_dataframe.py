@@ -12,6 +12,7 @@ print(top.iloc[3])
 #this is the column to add
 dif = top['Budget (sg)'] - top['Forecast (gp)']
 
+
 df = [top, dif]
 
 #blend 
