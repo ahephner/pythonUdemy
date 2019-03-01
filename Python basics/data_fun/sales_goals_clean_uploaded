@@ -9,7 +9,8 @@ to_csv = r"C:\Users\AJ Hephner\Documents\2019\Goals Upload\Sale Goals Update gol
 Sales_Detail = r"C:\Users\AJ Hephner\Documents\2019\Goals Upload\Sales Doc Detail Export-dataloader.csv"
 
 #Dataloader goal infor -> want record id, progress amount and sales rep id
-goal_dataloader = r"C:\Users\AJ Hephner\Documents\2019\Goals Upload\Sale Goals Update golf.csv"
+goal_dataloader = r"C:\Users\AJ Hephner\Documents\2019\Goals Upload\Sales Goal Export.csv"
+
 
 #import and clean 
 sales = pd.read_csv(Sales_Detail)
