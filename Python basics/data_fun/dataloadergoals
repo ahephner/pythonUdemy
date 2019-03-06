@@ -1,0 +1,53 @@
+import numpy as np
+import pandas as pd
+
+#Files Required
+#landing page ALL EXCEL FILES NEED TO BE CSV
+to_csv = r"C:\Users\AJ Hephner\Documents\2019\Goals Upload\landingfoliar.csv"
+#Sales Detail need Extended Price and Sales Rep ID limit the reset with query filters 
+#We can limit it to days since last query once established
+Sales_Detail = r"C:\Users\AJ Hephner\Documents\2019\Goals Upload\dataloaderFoliar.csv"
+
+#Dataloader goal infor -> want record id, progress amount and sales rep id
+goal_dataloader = r"C:\Users\AJ Hephner\Documents\2019\Goals Upload\goalsAT.csv"
+
+#import and clean 
+sales = pd.read_csv(Sales_Detail)
+sales = sales.rename(columns={'Sales_Document__r.Sales Rep (Doc)':'Sales Rep'})
+
+goals = pd.read_csv(goal_dataloader)
+goals = goals.fillna(0)
+
+#group and reset index 
+print('Before here -> ')
+print(sales)
+sales = sales.groupby('Sales Rep')['Extended Price'].sum().reset_index()
+
+print('after')
+print(sales)
+print(sales.columns)
+print(sales.info())
+
+#merge the two 
+x = goals.merge(sales, on= 'Sales Rep')
+
+print(x.head())
+#create new col and check
+x['added'] = x['Progress Amount'] + x['Extended Price']
+print(x.head())
+
+
+#create new df and send out
+finished = x[['Record ID', 'added']]
+#rename col to match dataloader
+finished = finished.rename(columns={'added':'Progress Amount'})
+
+#regroup here don't always have to but only allowed 12 duplicate update calls per job on dataloader
+#cover ass
+finished = finished.groupby('Record ID')['Progress Amount'].sum().reset_index()
+#rows should equal same as grouped sales
+print(finished.info())
+print(finished.head())
+
+#bye
+finished.to_csv(to_csv)
