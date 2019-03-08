@@ -21,7 +21,7 @@ goals = goals.fillna(0)
 #group and reset index 
 print('Before here -> ')
 print(sales)
-sales = sales.groupby('Sales Rep')['Extended Price'].sum().reset_index()
+sales = sales.groupby('Sales Rep').sum().reset_index()
 
 print('after')
 print(sales)
@@ -33,21 +33,26 @@ x = goals.merge(sales, on= 'Sales Rep')
 
 print(x.head())
 #create new col and check
-x['added'] = x['Progress Amount'] + x['Extended Price']
+#only run this if you're adding the totals from the last time you ran it. if running for entire year don't use
+#x['added'] = x['Progress Amount'] + x['Extended Price']
+#print(x.head())
+
+#cal. margin
+x['margin'] = x['Gross Profit']/x['Extended Price'] * 100
+
 print(x.head())
-
-
 #create new df and send out
-finished = x[['Record ID', 'added']]
+#if you run dataloader for full year use progress amount other wise uncomment line 37 and use add and rename in the next step
+finished = x[['Record ID', 'Progress Amount', 'margin']]
 #rename col to match dataloader
-finished = finished.rename(columns={'added':'Progress Amount'})
+finished = finished.rename(columns={'margin': 'Progress Margin'})
 
 #regroup here don't always have to but only allowed 12 duplicate update calls per job on dataloader
 #cover ass
-finished = finished.groupby('Record ID')['Progress Amount'].sum().reset_index()
+#finished = finished.groupby('Record ID')['Progress Amount'].sum().reset_index()
 #rows should equal same as grouped sales
 print(finished.info())
 print(finished.head())
 
 #bye
-finished.to_csv(to_csv)
+finished.to_csv(to_csv, index=False)
