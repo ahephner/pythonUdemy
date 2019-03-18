@@ -78,7 +78,7 @@ ar = ar.rename(columns={'Sales_Document__r.Sales Rep (Doc)':'Sales Rep'})
 ar = ar.groupby('Sales Rep').sum().reset_index()
 arg = arg.fillna(0)
 
-arx = arg.merge(bs, on='Sales Rep')
+arx = arg.merge(ar, on='Sales Rep')
 arx['Progress Margin'] = arx['Gross Profit']/arx['Extended Price'] * 100 
 outar = arx[['Record ID', 'Progress Margin', 'Extended Price']]
 outar = outar.rename(columns={'Extended Price': 'Progress Amount'})
