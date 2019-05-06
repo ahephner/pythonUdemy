@@ -44,3 +44,19 @@ final = merged[['Record ID', 'Product_Sub_Total__c']]
 final = final.rename(columns={'Product_Sub_Total__c': 'Total_Sales__c'})
 #bye
 final.to_csv(land)
+
+
+#find cust with multiple sales goals attached
+# cust = {}
+# col = cg['Customer']
+
+# for i in col.keys():
+#     if i in cust.keys():
+#         cust[x] += 1
+#     else:
+#         cust[x] = 1
+
+# df = pd.DataFrame.from_dict(cust)
+# df = df[df[0]> 1]
+
+# print(df)
