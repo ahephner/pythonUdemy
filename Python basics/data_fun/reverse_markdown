@@ -1,0 +1,25 @@
+import pandas as pd
+
+file = pd.read_csv(r'C:\Users\AJ Hephner\Downloads\bulkQuery_result_7502M00000TmZ11QAF_7512M00000YuiOZQAZ_7522M00000GuM5x.csv')
+
+file.head()
+#markeddown
+md = file[file['Extended_Price__c'] == 0.0]
+
+#compare line #'s
+md.info()
+file.info()
+
+#bad clean this up later
+md['no_mark'] =  md['Qty__c']*md['Unit_Markdown__c']
+
+no_mobilization = md[md['Product_Name__c'].str.contains('Mobilization Expenses')]
+
+md['no_mark'].sum()
+
+
+no_serv = no_mobilization[~no_mobilization['Product_Name__c'].str.contains('Contracted')]
+no_serv.head()
+
+no_serv = no_serv[~no_serv['Product_Name__c'].str.contains('SHIPPING')]
+no_serv['no_mark'].sum()
