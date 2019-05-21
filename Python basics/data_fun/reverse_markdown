@@ -1,25 +1,42 @@
 import pandas as pd
+import numpy as np 
 
-file = pd.read_csv(r'C:\Users\AJ Hephner\Downloads\bulkQuery_result_7502M00000TmZ11QAF_7512M00000YuiOZQAZ_7522M00000GuM5x.csv')
-
-file.head()
-#markeddown
-md = file[file['Extended_Price__c'] == 0.0]
-
-#compare line #'s
-md.info()
-file.info()
-
-#bad clean this up later
-md['no_mark'] =  md['Qty__c']*md['Unit_Markdown__c']
-
-no_mobilization = md[md['Product_Name__c'].str.contains('Mobilization Expenses')]
-
-md['no_mark'].sum()
+df = pd.read_csv(r"C:\Users\AJ Hephner\Documents\2019\-S account detail sales 1-1 to 5-21.csv")
+reps = pd.read_csv(r"C:\Users\AJ Hephner\Documents\2019\All Customer Goals\Sales Reps Salesforce ID.csv")
+cust = pd.read_csv(r"C:\Users\AJ Hephner\Documents\JDT\Customer Name, Number, Real Account ID.csv")
 
 
-no_serv = no_mobilization[~no_mobilization['Product_Name__c'].str.contains('Contracted')]
-no_serv.head()
+df.head(1)
+#take out mobilization, contracted, shipping case sens. used .copy because it go rid of key warning
+df = df[~df['Product_Name__c'].str.contains('Mobilization')]
+df = df[~df['Product_Name__c'].str.contains('Contracted')]
+df = df[~df['Product_Name__c'].str.contains('SHIPPING')]
 
-no_serv = no_serv[~no_serv['Product_Name__c'].str.contains('SHIPPING')]
-no_serv['no_mark'].sum()
+#markeddown reverse
+#very similar to sf formula field 
+df['md'] = np.where(df['Extended_Price__c']==0, df['Qty__c']*df['Unit_Markdown__c'], df['Extended_Price__c'])
+
+test = df[['Product_Name__c', 'Extended_Price__c','Qty__c','Unit_Markdown__c', 'md']]
+test.head()
+
+total = df.groupby(['Customer_Name__c', 'Customer__c']).sum().reset_index()
+total.head(10)
+
+#test group by above
+#filter_data = df[df['Customer_Name__c'].str.contains('Colts')]
+#filter_data['md'].sum()
+
+#see if any empty customer sales 
+#zero = total[total['md'] == 0 ]
+#print(zero)
+
+#merge customer table
+cust_merge = cust.merge(total, on=['Customer_Name__c', 'Customer__c'])
+
+#merge open orders
+open = pd.read_csv(r"C:\Users\AJ Hephner\Documents\2019\ENP\JDT open order 5-21-19.csv")
+open = open.rename(columns={"Real Account ID": "Real_Account_ID__c"})
+
+op = open.merge(cust_merge, on = 'Real_Account_ID__c')
+
+#data time 
