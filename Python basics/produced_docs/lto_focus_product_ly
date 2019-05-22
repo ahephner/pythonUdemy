@@ -21,7 +21,6 @@ herb = herb.groupby(['Sales Rep', 'group']).sum().reset_index()
 herb = herb.fillna(0)
 herb['Prev YTD Margin'] = herb['Gross Profit'] / herb['Previous YTD Sales'] * 100
 
-herb_merge = herb_goal.merge(herb, on= 'Sales Rep')
 
 print(herb.head(1))
 
