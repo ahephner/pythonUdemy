@@ -45,3 +45,30 @@ FROM CapitalBikeShare
 WHERE CAST(StartDate as Date) = @StartDate
 -- Group by StartStation
 Group by StartStation;
+	    
+/*mult statement table value function*/
+-- Create the function
+CREATE FUNCTION CountTripAvgDuration (@Month CHAR(2), @Year CHAR(4))
+-- Specify return variable
+RETURNS @DailyTripStats TABLE(
+	TripDate	date,
+	TripCount	int,
+	AvgDuration	numeric)
+AS
+BEGIN
+-- Insert query results into @DailyTripStats
+Insert @dailyTripStats
+SELECT
+    -- Cast StartDate as a date
+	Cast(StartDate AS date),
+    COUNT(ID),
+    AVG(Duration)
+FROM CapitalBikeShare
+WHERE
+	DATEPART(month, StartDate) = @Month AND
+    DATEPART(year, StartDate) = @Year
+-- Group by StartDate as a date
+GROUP BY Cast(StartDate AS date)
+-- Return
+Return 
+END
