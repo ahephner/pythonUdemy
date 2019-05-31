@@ -1,28 +1,30 @@
 import pandas as pd 
 from datetime import datetime, timedelta
-
-herb = pd.read_csv(r"C:\Users\AJ Hephner\Documents\2019\Goals Upload\LTO\Last Year\Herbicide.csv")
-
+#this is all sales i need to change var
+sales = pd.read_csv(r'C:\Users\AJ Hephner\Documents\2019\Goals Upload\LTO\Last Year\allsales.csv')
+reps = pd.read_csv(r'C:\Users\AJ Hephner\Documents\2019\All Customer Goals\Sales Reps Salesforce ID.csv')
 #goals combined into one fild
 all_goals = pd.read_csv(r'C:\Users\AJ Hephner\Documents\2019\Goals Upload\LTO\all goals id  fp cat.csv')
 #to update dataloader
 update = r'C:\Users\AJ Hephner\Documents\2019\Goals Upload\LTO\Last Year\LY Goal Upload.csv'
 
-
+#print(herb.head(1))
 #dates for YOY compare  in sf
 x = datetime.now() - timedelta(days=365)
-print(x)
+# print('Todays Date a year ago:')
+# print(x)
 
-herb = herb.rename(columns={'Sales_Document__r.Sales Rep (Doc)': 'Sales Rep', 'Extended Price': 'Previous YTD Sales', 'LTO Focus Product Category': 'group'})
-herb['Doc Date'] = pd.to_datetime(herb['Doc Date'])
-herb = herb[herb['Doc Date']<= x]
-print(herb)
-herb = herb.groupby(['Sales Rep', 'group']).sum().reset_index()
-herb = herb.fillna(0)
-herb['Prev YTD Margin'] = herb['Gross Profit'] / herb['Previous YTD Sales'] * 100
+#herb = herb.rename(columns={'Sales Rep (Doc): Sales Rep': 'Sales Rep', 'Extended Price': 'Previous YTD Sales', 'LTO Focus Product Category': 'group'})
+sales['Doc Date'] = pd.to_datetime(sales['Doc Date'])
+sales = sales[sales['Doc Date']<= x]
+# print('after column rename')
+# print(herb.head(1))
+df = sales.groupby(['LTO Focus Product Category', 'Sales Rep (Doc): Sales Rep']).sum().reset_index()
 
+df['Prev YTD Margin'] = df['Gross Profit'] / df['Extended Price'] * 100
 
-print(herb.head(1))
+add_rep = reps.merge(df, on='Sales Rep (Doc): Sales Rep')
+add_rep = add_rep.rename(columns={'Id': 'Sales Rep', 'Extended Price': 'PREV YTD Sales', 'LTO Focus Product Category': 'group'})
 
 all_goals = all_goals.rename(columns={'Focus Product Category': 'FP'})
 #method gives key to join on so I don't have to keep load multiple files. 
@@ -38,12 +40,15 @@ def gp(fp):
 
 all_goals['group'] = all_goals.FP.apply(gp)
 
+# print('after .apply()')
+# print(all_goals.head(1))
+print(add_rep.head(5))
 print(all_goals.head(1))
+join = all_goals.merge(add_rep, on =['Sales Rep', 'group'])
+# print('after join merger')
+# print(join.head(25))
 
-join = all_goals.merge(herb, on =['Sales Rep', 'group'])
+to_sf = join[['Record ID', 'PREV YTD Sales', 'Prev YTD Margin']]
 
-print(join.head(25))
-
-to_sf = join[['Record ID', 'Previous YTD Sales', 'Prev YTD Margin']]
 #bye 
 to_sf.to_csv(update, index = False)
