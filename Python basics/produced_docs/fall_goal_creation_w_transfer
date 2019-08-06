@@ -1,0 +1,67 @@
+#NOTE THIS IS PLACEHOLDER FOR A JUPYTER FILE WILL NEED CLEANED WITH ADDITIONAL PRINT MESSAGES TO RUN IN TERMINAL 
+import pandas as pd
+df = pd.read_csv(r'C:\Users\AJ Hephner\Downloads\report1565100658573.csv')
+
+#Here we are grouping by who made a sale last year (ly) vs. who owns the account now. 
+#That way who owns the account now can see what the previous time frame sales amount was. 
+#We are grouping by sales rep: sales rep (no) so we can join those values together and then create 
+#a new df that is only with the new owner
+#We will drop duplicates after combining and the doubles df will handle the accounts where we had more than 
+#one rep sell to an account then we will combine both
+
+ly = df.groupby(['Real Account ID', 'Customer #', 'Sales Rep (Doc): Sales Rep']).sum().reset_index()
+no = df.groupby(['Real Account ID', 'Customer #', 'Sales Rep: Sales Rep']).sum().reset_index()
+
+print(ly.head())
+print(no.head())
+
+ly = ly.rename(columns={'Sales Rep (Doc): Sales Rep': 'Sales Rep: Sales Rep'})
+transfers = ly.merge(no, on='Real Account ID', how='right')
+transfers= transfers[['Real Account ID','Customer #_y', 'Sales Rep: Sales Rep_y','Extended Price_y' ]]
+
+#dropping dublicate values
+transfers = ly.merge(no, on='Real Account ID', how='right')
+#test a double value need to look at report and see where there are two 
+#should return blank
+print(transfers.loc[transfers['Real Account ID'] == '0014100000O8GRbAAN'])
+
+#clean up columns 
+transfers = transfers.rename(columns={'Real Account ID': 'Account Id', 'Customer #_y': 'Customer #', 'Sales Rep: Sales Rep_y': 'Sales Rep', 
+                                      'Extended Price_y': 'Previous Amount' })
+                                      
+ #get accounts with sales from different reps
+ double = df.groupby(['Real Account ID', 'Sales Rep (Doc): Sales Rep','Customer #']).sum().reset_index() 
+ 
+ #only keep the double sales
+ double = pd.concat(g for _, g in double.groupby('Real Account ID') if len(g)>1)
+ 
+ double = double.rename(columns={'Real Account ID': 'Account Id','Sales Rep (Doc): Sales Rep': 'Sales Rep', 'Customer #': 'Customer #',
+                                'Extended Price': 'Previous Amount'})
+                                
+#Join the two              
+goals = [transfers, double]
+goals = pd.concat(goals)
+
+#set name and additional columns
+goals['Goal Name'] = goals['Sales Rep']+'('+goals['Customer #']+')'+" Sept '19"
+goals['EOP'] = 'TRUE'
+goals['Start Date'] = '9/1/2019'
+goals['End Date'] = '9/30/2019'
+goals['Budget Amount'] = 0
+goals['Forecast Amount'] = 0
+goals['Budget Amount'] = 0 
+
+#Join with reps to get the rep ID this is stored on another file 
+rep= pd.read_csv(r"C:\Users\AJ Hephner\Documents\2019\Work Bench\reps_id.csv")
+rep = rep.rename(columns={'Name': 'Sales Rep'})
+goals = goals.merge(rep, on='Sales Rep', how= 'outer')
+
+#Pull out inactive Reps store on another local file 
+inactive_rep = goals[goals['Sales Rep'].str.contains('Inactive')]
+
+#notice the ~ serves as != 
+goals = goals[~goals['Sales Rep'].str.contains('Inactive')]
+
+#bye
+goals.to_csv(r'C:\Users\AJ Hephner\Documents\2019\Goals Upload\EOP Goals\Sept. Goals .csv', index=False)
+inactive_rep.to_csv(r"C:\Users\AJ Hephner\Downloads\report1564747583310.csv", index= False )
