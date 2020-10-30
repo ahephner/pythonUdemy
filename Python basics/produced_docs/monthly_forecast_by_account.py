@@ -62,19 +62,11 @@ bucci = f[(f['Rep'].str.contains('Bucci')) & (f['May 19']>999)]
 f = f[~f['Rep'].str.contains('Bucci')]
 smith = f[(f['Rep'].str.contains('Roy Smith')) & (f['May 19']>999)]
 f = f[~f['Rep'].str.contains('Roy Smith')]
-bash = f[(f['Rep'].str.contains('Bash')) & (f['May 19']>999)]
-f = f[~f['Rep'].str.contains('Bash')]
-petrosky = f[(f['Rep'].str.contains('Petrosky')) & (f['May 19']>999)]
-f = f[~f['Rep'].str.contains('Petrosky')]
-biddle = f[(f['Rep'].str.contains('Biddle')) & (f['May 19']>999)]
-f = f[~f['Rep'].str.contains('Biddle')]
-sand = f[(f['Rep'].str.contains('Scott Sand')) & (f['May 19']>999)]
-f = f[~f['Rep'].str.contains('Scott Sand')]
 tSmith = f[(f['Rep'].str.contains('Todd Smith')) & (f['May 19']>999)]
 f = f[~f['Rep'].str.contains('Todd Smith')]
 
 #append the above then add back to master list
-largeReps = bucci.append([ smith, bash, petrosky, biddle, sand, tSmith])
+largeReps = bucci.append([ smith,  tSmith])
 f = f.append(largeReps)
 
 #add in rep info
@@ -84,9 +76,9 @@ f = f.merge(rep, on='Rep', how= 'outer')
 #format the rest of the columns value
 
 f['Goal name'] = f['Rep']+'('+f['Customer #']+')'+" April '20"
-f['Budget Type'] = 'Monthly Sales'
-f['Start Date'] = '5/1/2020'
-f['End Date'] = '5/31/2020'
+f['Budget Type'] = 'Monthly Account Sales'
+f['Start Date'] = '11/1/2020'
+f['End Date'] = '11/30/2020'
 f['Forecast Amount'] = 0
 
 print('here are all columns')
@@ -103,10 +95,19 @@ f = f.merge(prevMonth, on=['Real Account ID', 'Customer #'], how='outer', indica
  secondValue = {'April 2020': 0, 'Customer Name': 'None'}
 f = f.fillna(value=secondValue)
 
-#get rid of walk in accounts
+#get rid of walk in accounts and house
 f= f[~f['Customer Name'].str.contains('WALK-IN')]
+f = f[~f['Customer Name'].str.contains('House')]
 #drop NA
 f = f.dropna()
+
+#Scott Sand wants any account sale from prev month plus baseline in Nov
+sc = f[f.Rep.str.contains('Sand')]
+sc_oct = sc[sc['Oct 2020']> 0]
+sc_nov = sc[(sc['Oct 2020'] == 0.0) & (sc['Nov 19'] >= 500)]
+#!!!may need in the future to use some sort of drop_duplicates(subset=['Customer Name'], keep='first')
+y = sc_oct.append(sc_nov)
+f = f.append(y)
 
 #bye
 f.to_csv(filepath, index=False)
