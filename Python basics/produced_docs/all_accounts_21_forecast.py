@@ -80,3 +80,21 @@ withGoal = sa.merge(prev_goal,on=['Real Account ID', 'Sales Rep: Sales Rep'], ho
 
 withGoal = withGoal[['Sales Rep: Sales Rep', 'Customer Name', 'Real Account ID', 'Customer #',
                       'Cur Sales', 'Cur Margin', 'Prev Sales', 'Prev Margin', 'Prev Forecast']]
+#---> Lets join reps and add detail columns then export
+rep = rep.rename(columns={'Name': 'Sales Rep: Sales Rep'})
+withReps = withGoal.merge(rep, on ='Sales Rep: Sales Rep',how='outer' )
+
+values = {'Cur Sales': 0, 'Cur Margin':0, 'Prev Sales': 0, 'Prev Margin':0, 'Prev Forecast': 0}
+out = withReps
+out = out.fillna(value=values)
+out['Goal Name']= "2020/21 "+out['Sales Rep: Sales Rep'] +'('+out['Customer #']+')'
+out['Budget Type'] = 'Annual Account Forecast'
+out['Start Date'] = '10/1/2020'
+out['End Date'] = '09/30/2021'
+out['Forecast Amount'] = 0
+
+#test
+test = out[out['Sales Rep: Sales Rep'].str.contains('Winter')]
+
+#bye
+out.to_csv(rfilepaht)
