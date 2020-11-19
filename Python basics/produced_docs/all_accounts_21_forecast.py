@@ -32,6 +32,9 @@ newRepSLY = newRepSLY.groupby(['Real Account ID', 'Sales Rep (Doc): Sales Rep', 
                                 'Customer Name']).sum().reset_index()
 newRepSLY['Sales Rep (Doc): Sales Rep'] = newRepSLY['Sales Rep: Sales Rep']
 prevSales = sameRepSLY.append(newRepSLY)
+#need to sum again to combine transfer
+prevSales = prevSales.groupby(['Real Account ID', 'Sales Rep (Doc): Sales Rep', 'Sales Rep: Sales Rep', 'Customer #',
+                                'Customer Name']).sum().reset_index()
 
 #current year sales and transfers
 sameRepCY = cur_sales[cur_sales['Sales Rep (Doc): Sales Rep'] == cur_sales['Sales Rep: Sales Rep']]
@@ -43,6 +46,8 @@ newRepCY = newRepCY.groupby(['Real Account ID', 'Sales Rep (Doc): Sales Rep', 'S
                                 'Customer Name']).sum().reset_index()
 newRepCY['Sales Rep (Doc): Sales Rep'] = newRepCY['Sales Rep: Sales Rep']
 curSales = sameRepCY.append(newRepCY)
+curSales = curSales.groupby(['Real Account ID', 'Sales Rep (Doc): Sales Rep', 'Sales Rep: Sales Rep', 'Customer #',
+                                'Customer Name']).sum().reset_index()
 
 #set margin prep to merge accounts df
 curSales['Margin'] = ((curSales['Gross Profit']/curSales['Extended Price']) * 100)
