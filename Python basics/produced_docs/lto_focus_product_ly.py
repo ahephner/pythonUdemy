@@ -1,12 +1,12 @@
 import pandas as pd 
 from datetime import datetime, timedelta
 #this is all sales i need to change var
-sales = pd.read_csv(r'C:\Users\AJ Hephner\Documents\2019\Goals Upload\LTO\Last Year\allsales.csv')
-reps = pd.read_csv(r'C:\Users\AJ Hephner\Documents\2019\All Customer Goals\Sales Reps Salesforce ID.csv')
+sales = pd.read_csv(r'filepath')
+reps = pd.read_csv(rfilepath)
 #goals combined into one fild
-all_goals = pd.read_csv(r'C:\Users\AJ Hephner\Documents\2019\Goals Upload\LTO\all goals id  fp cat.csv')
+all_goals = pd.read_csv(r'filepath')
 #to update dataloader
-update = r'C:\Users\AJ Hephner\Documents\2019\Goals Upload\LTO\Last Year\LY Goal Upload.csv'
+update = r'filepath'
 
 #print(herb.head(1))
 #dates for YOY compare  in sf
